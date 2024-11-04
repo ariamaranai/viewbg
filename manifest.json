@@ -1,0 +1,1 @@
+{"manifest_version":3,"name":"vbgimg","version":"0","description":"View background image","icons":{"128":"128.png"},"permissions":["contextMenus","scripting","tabs"],"host_permissions":["<all_urls>"],"background":{"service_worker":"s.js"}}
