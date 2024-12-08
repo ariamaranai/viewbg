@@ -1,1 +1,37 @@
-chrome.runtime.onInstalled.addListener(()=>chrome.contextMenus.create({id:"",title:"View background image",contexts:["page","link","image"]})),chrome.contextMenus.onClicked.addListener(async(a,{url:u,id:i})=>u[0]!="c"&&chrome.scripting.executeScript({target:{tabId:i},world:"MAIN",func:()=>{let u=document,n,w=innerWidth,h=innerHeight,v=[],m,t=u.createTreeWalker(u.activeElement,1);while(n=t.nextNode())n.checkVisibility()&&(u=n.getBoundingClientRect()).y<h&&u.bottom>0&&u.x<w&&u.right>0&&u.width>99&&u.height>99&&(u=n.tagName=="IMG"&&((m=n.computedStyleMap()).get("position").toString()!="static"||m.get("pointer-events")=="none")&&n.src||(u=n.computedStyleMap().get("background-image").toString())[3]=="("&&u.slice(5,-2))&&!v.includes(u)&&v.push(u);return v}},v=>{a=(v=v[0].result).length;while(a)chrome.tabs.create({url:v[--a]})}))
+chrome.runtime.onInstalled.addListener(()=>
+  chrome.contextMenus.create({
+    id: "",
+    title: "View background image",
+    contexts: ["page","link","image"]
+  })
+)
+chrome.contextMenus.onClicked.addListener(async (a, b)=>
+  b.url[0] !="c" && chrome.scripting.executeScript({
+    target: {tabId: b.id},
+    world: "MAIN",
+    func: ()=> {
+      let n, w = innerWidth, h = innerHeight, v = []
+          t = document.createTreeWalker(document.activeElement, 1)
+      while (n = t.nextNode()) {
+        if (n.checkVisibility()) {
+          let r = n.getBoundingClientRect()
+          if (r.y < h && r.bottom > 0 && r.x < w && r.right > 0 &&
+              r.width > 99 && r.height > 99) {
+            let m = n.computedStyleMap()
+            let s =
+              (n.tagName == "IMG" &&
+               (m.get("position").toString() != "static" || m.get("pointer-events").toString() == "none") &&
+               n.src) ||
+              ((m = m.get("background-image").toString())[3] == "(" &&
+               m.slice(5, -2))
+            s && !v.includes(s) && v.push(s)
+          }
+        }
+      }
+      return v
+    }
+  }, v=> {
+    a = (v = v[0].result).length;
+    while(a) chrome.tabs.create({url: v[--a]})
+  })
+)
