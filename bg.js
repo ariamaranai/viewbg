@@ -10,7 +10,7 @@ chrome.contextMenus.onClicked.addListener(async (a, b)=>
     target: {tabId: b.id},
     world: "MAIN",
     func: ()=> {
-      let n, w = innerWidth, h = innerHeight, v = []
+      let n, w = innerWidth, h = innerHeight, v = [],
           t = document.createTreeWalker(document.activeElement, 1)
       while (n = t.nextNode()) {
         if (n.checkVisibility()) {
