@@ -10,20 +10,14 @@ chrome.contextMenus.onClicked.addListener(async (a, b)=>
     target: {tabId: b.id},
     world: "MAIN",
     func: ()=> {
-      let n, w = innerWidth, h = innerHeight, v = [],
-          t = document.createTreeWalker(document.activeElement, 1)
+      let n, w = innerWidth, h = innerHeight, v = [], t = document.createTreeWalker(document.activeElement, 1)
       while (n = t.nextNode()) {
         if (n.checkVisibility()) {
           let r = n.getBoundingClientRect()
-          if (r.y < h && r.bottom > 0 && r.x < w && r.right > 0 &&
-              r.width > 99 && r.height > 99) {
-            let m = n.computedStyleMap()
-            let s =
-              (n.tagName == "IMG" &&
-               (m.get("position").toString() != "static" || m.get("pointer-events").toString() == "none") &&
-               n.src) ||
-              ((m = m.get("background-image").toString())[3] == "(" &&
-               m.slice(5, -2))
+          if (r.y < h && r.bottom > 0 && r.x < w && r.right > 0 && r.width > 99 && r.height > 99) {
+            let m = n.computedStyleMap(),
+                s = (n.tagName == "IMG" && (m.get("position").toString() != "static" || m.get("pointer-events").toString() == "none") && n.src) ||
+              ((m = m.get("background-image").toString())[3] == "(" && m.slice(5, -2))
             s && !v.includes(s) && v.push(s)
           }
         }
