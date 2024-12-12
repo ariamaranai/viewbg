@@ -1,24 +1,45 @@
-chrome.runtime.onInstalled.addListener(()=> chrome.contextMenus.create({id: "", title: "View background image", contexts: ["page","link","image"]}))
-chrome.contextMenus.onClicked.addListener(async (a, b)=> b.url[0] !="c" && chrome.scripting.executeScript({
-  target: {tabId: b.id},
-  world: "MAIN",
-  func: ()=> {
-    let n, w = innerWidth, h = innerHeight, v = [], t = document.createTreeWalker(document.activeElement, 1)
-    while (n = t.nextNode()) {
-      if (n.checkVisibility()) {
-        let r = n.getBoundingClientRect()
-        if (r.y < h && r.bottom > 0 && r.x < w && r.right > 0 && r.width > 99 && r.height > 99) {
-          let m = n.computedStyleMap(),
-              s = (n.tagName == "IMG" && (m.get("position").toString() != "static" || m.get("pointer-events").toString() == "none") && n.src) ||
-            ((m = m.get("background-image").toString())[3] == "(" && m.slice(5, -2))
-          s && !v.includes(s) && v.push(s)
+chrome.contextMenus.onClicked.addListener(async (_, tab) =>
+  tab.url[0] != "c" && chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    world: "MAIN",
+    func: () => {
+      let node;
+      let srcs = [];
+      let walker = document.createTreeWalker(document.activeElement, 1);
+      while ((node = walker.nextNode())) {
+        if (node.checkVisibility()) {
+          let rect = node.getBoundingClientRect();
+          if (
+            rect.y < innerHeight &&
+            rect.bottom > 0 &&
+            rect.x < innerWidth &&
+            rect.right > 0 &&
+            rect.width > 99 &&
+            rect.height > 99
+          ) {
+            let styleMap = node.computedStyleMap();
+            let src =
+              (node.tagName == "IMG" &&
+                (styleMap.get("position").toString() != "static" ||
+                 styleMap.get("pointer-events").toString() == "none") &&
+               node.src) ||
+              ((styleMap = styleMap.get("background-image").toString())[3] == "(" &&
+                styleMap.slice(5, -2));
+            src && !srcs.includes(src) && srcs.push(src);
+          }
         }
       }
+      return srcs;
     }
-    return v
-  }
-}, e=> {
-  a = (e = v[0].result).length;
-  while(a) chrome.tabs.create({url: v[--a]})
-})
-)
+  }, results => {
+    for (let i = 0, srcs = results[0].result; i < srcs.length; ++i)
+      chrome.tabs.create({ url: srcs[i] });
+  })
+);
+chrome.runtime.onInstalled.addListener(() =>
+  chrome.contextMenus.create({
+    id: "",
+    title: "View background image",
+    contexts: ["page", "link", "image"]
+  })
+);
