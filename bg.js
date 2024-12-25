@@ -32,8 +32,8 @@ chrome.contextMenus.onClicked.addListener(async (_, tab) =>
       return srcs;
     }
   }, results => {
-    for (let i = 0, srcs = results[0].result; i < srcs.length; ++i)
-      chrome.tabs.create({ url: srcs[i] });
+    for (let i = 0, srcs = results[0].result; i < srcs.length; )
+      chrome.tabs.create({ url: srcs[i], index: ++i + tab.index});
   })
 );
 chrome.runtime.onInstalled.addListener(() =>
