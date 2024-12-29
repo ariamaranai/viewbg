@@ -1,5 +1,5 @@
 chrome.contextMenus.onClicked.addListener(async (_, tab) =>
-  tab.url[0] != "c" && chrome.scripting.executeScript({
+  chrome.scripting.executeScript({
     target: { tabId: tab.id },
     world: "MAIN",
     func: () => {
@@ -40,6 +40,7 @@ chrome.runtime.onInstalled.addListener(() =>
   chrome.contextMenus.create({
     id: "",
     title: "View background image",
-    contexts: ["page", "link", "image"]
+    contexts: ["page", "link", "image"],
+    documentUrlPatterns: ["https://*/*", "https://*/", "http://*/*", "http://*/"]
   })
 );
