@@ -18,13 +18,16 @@ chrome.contextMenus.onClicked.addListener(async (_, tab) =>
             rect.height > 99
           ) {
             let styleMap = node.computedStyleMap();
-            let src =
-              (node.tagName == "IMG" &&
-                (styleMap.get("position").toString() != "static" ||
-                 styleMap.get("pointer-events").toString() == "none") &&
-               node.src) ||
-              ((styleMap = styleMap.get("background-image").toString())[3] == "(" &&
-                styleMap.slice(5, -2));
+            let src = (
+              node.tagName == "IMG" &&
+              (
+                styleMap.get("position").toString() != "static" ||
+                styleMap.get("pointer-events").toString() == "none"
+              ) && node.src
+            ) || (
+              (styleMap = styleMap.get("background-image").toString())[3] == "(" &&
+              styleMap.slice(5, -2)
+            );
             src && !srcs.includes(src) && srcs.push(src);
           }
         }
@@ -32,7 +35,7 @@ chrome.contextMenus.onClicked.addListener(async (_, tab) =>
       return srcs;
     }
   }, results => {
-    for (let i = 0, srcs = results[0].result; i < srcs.length; )
+    for (let i = 0, srcs = results[0].result; i < srcs.length;)
       chrome.tabs.create({ url: srcs[i], index: ++i + tab.index});
   })
 );
