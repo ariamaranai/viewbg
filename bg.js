@@ -1,4 +1,4 @@
-chrome.contextMenus.onClicked.addListener(async (_, tab) =>
+chrome.contextMenus.onClicked.addListener((_, tab) =>
   chrome.scripting.executeScript({
     target: { tabId: tab.id },
     world: "MAIN",
@@ -19,8 +19,7 @@ chrome.contextMenus.onClicked.addListener(async (_, tab) =>
           ) {
             let styleMap = node.computedStyleMap();
             let src = (
-              node.tagName == "IMG" &&
-              (
+              node.tagName == "IMG" && (
                 styleMap.get("position").toString() != "static" ||
                 styleMap.get("pointer-events").toString() == "none"
               ) && node.src
