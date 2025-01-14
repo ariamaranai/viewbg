@@ -5,8 +5,8 @@ chrome.contextMenus.onClicked.addListener((_, tab) =>
     func: () => {
       let node;
       let srcs = [];
-      let walker = document.createTreeWalker(document.activeElement, 1);
-      while ((node = walker.nextNode())) {
+      let iter = document.createNodeIterator(document.activeElement, 1);
+      while ((node = iter.nextNode())) {
         if (node.checkVisibility()) {
           let rect = node.getBoundingClientRect();
           if (
