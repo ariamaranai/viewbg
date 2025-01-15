@@ -5,7 +5,7 @@ chrome.contextMenus.onClicked.addListener((_, tab) =>
     func: () => {
       let node;
       let srcs = [];
-      let iter = document.createNodeIterator(document.activeElement, 1);
+      let iter = document.createTreeWalker(document.activeElement, 1);
       while ((node = iter.nextNode())) {
         if (node.checkVisibility()) {
           let rect = node.getBoundingClientRect();
@@ -35,7 +35,7 @@ chrome.contextMenus.onClicked.addListener((_, tab) =>
     }
   }, results => {
     for (let i = 0, srcs = results[0].result; i < srcs.length;)
-      chrome.tabs.create({ url: srcs[i], index: ++i + tab.index});
+      chrome.tabs.create({ url: srcs[i], index: ++i + tab.index });
   })
 );
 chrome.runtime.onInstalled.addListener(() =>
