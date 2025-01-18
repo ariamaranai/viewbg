@@ -3,16 +3,19 @@ chrome.contextMenus.onClicked.addListener((_, tab) =>
     target: { tabId: tab.id },
     world: "MAIN",
     func: () => {
-      let node;
+      let d = document;
+      let iter = d.createTreeWalker(d.activeElement, 1);
+      let w = innerWidth;
+      let h = innerHeight;
       let srcs = [];
-      let iter = document.createTreeWalker(document.activeElement, 1);
+      let node;
       while ((node = iter.nextNode())) {
         if (node.checkVisibility()) {
           let rect = node.getBoundingClientRect();
           if (
-            rect.y < innerHeight &&
+            rect.y < w &&
             rect.bottom > 0 &&
-            rect.x < innerWidth &&
+            rect.x < h &&
             rect.right > 0 &&
             rect.width > 99 &&
             rect.height > 99
