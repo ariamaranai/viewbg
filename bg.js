@@ -4,12 +4,12 @@ chrome.contextMenus.onClicked.addListener((_, tab) =>
     world: "MAIN",
     func: () => {
       let d = document;
-      let iter = d.createTreeWalker(d.activeElement, 1);
+      let walker = d.createTreeWalker(d.activeElement, 1);
       let w = innerWidth;
       let h = innerHeight;
       let srcs = [];
       let node;
-      while ((node = iter.nextNode())) {
+      while ((node = walker.nextNode())) {
         if (node.checkVisibility()) {
           let rect = node.getBoundingClientRect();
           if (
@@ -28,7 +28,7 @@ chrome.contextMenus.onClicked.addListener((_, tab) =>
               ) && node.src
             ) || (
               (styleMap = styleMap.get("background-image").toString())[3] == "(" &&
-              styleMap.slice(5, -2)
+                styleMap.slice(5, -2)
             );
             src && !srcs.includes(src) && srcs.push(src);
           }
