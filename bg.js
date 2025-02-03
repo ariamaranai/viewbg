@@ -1,7 +1,9 @@
-chrome.contextMenus.onClicked.addListener((_, tab) =>
+chrome.contextMenus.onClicked.addListener(async (_, tab) =>
   chrome.scripting.executeScript({
     target: { tabId: tab.id },
-    world: "MAIN",
+    world: (await chrome.contentSettings.javascript.get({
+      primaryUrl: tan.url
+    })).setting == "allow" ? "MAIN" : "ISOLATED",
     func: () => {
       let d = document;
       let walker = d.createTreeWalker(d.activeElement, 1);
