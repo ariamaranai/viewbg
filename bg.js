@@ -2,7 +2,7 @@ chrome.contextMenus.onClicked.addListener(async (_, tab) =>
   chrome.scripting.executeScript({
     target: { tabId: tab.id },
     world: (await chrome.contentSettings.javascript.get({
-      primaryUrl: tan.url
+      primaryUrl: tab.url
     })).setting == "allow" ? "MAIN" : "ISOLATED",
     func: () => {
       let d = document;
