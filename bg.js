@@ -9,7 +9,7 @@ chrome.contextMenus.onClicked.addListener(async (_, tab) =>
       let walker = d.createTreeWalker(d.activeElement, 1);
       let w = innerWidth;
       let h = innerHeight;
-      let srcs = [];
+      let urls = [];
       let node;
       while ((node = walker.nextNode())) {
         if (node.checkVisibility()) {
@@ -32,15 +32,17 @@ chrome.contextMenus.onClicked.addListener(async (_, tab) =>
               (styleMap = styleMap.get("background-image").toString())[3] == "(" &&
                 styleMap.slice(5, -2)
             );
-            src && !srcs.includes(src) && srcs.push(src);
+            src && !urls.includes(src) && urls.push(src);
           }
         }
       }
-      return srcs;
+      return urls;
     }
   }, results => {
-    for (let i = 0, srcs = results[0].result; i < srcs.length;)
-      chrome.tabs.create({ url: srcs[i], index: ++i + tab.index });
+    let i = 0;
+    let urls = results[0].result;
+    while (i < urls.length)
+      chrome.tabs.create({ url: urls[i], index: ++i + tab.index });
   })
 );
 chrome.runtime.onInstalled.addListener(() =>
