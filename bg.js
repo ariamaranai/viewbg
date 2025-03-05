@@ -4,15 +4,14 @@ chrome.contextMenus.onClicked.addListener(async (_, tab) => {
       let results = await chrome.scripting.executeScript({
         target: { tabId: tab.id },
         func: () => {
-          let d = document;
-          let walker = d.createTreeWalker(d.activeElement, 1);
+          let n = document;
+          let walker = n.createTreeWalker(n.activeElement, 1);
           let w = innerWidth;
           let h = innerHeight;
           let urls = [];
-          let node;
-          while ((node = walker.nextNode())) {
-            if (node.checkVisibility()) {
-              let rect = node.getBoundingClientRect();
+          while ((n = walker.nextNode())) {
+            if (n.checkVisibility()) {
+              let rect = n.getBoundingClientRect();
               if (
                 rect.y < w &&
                 rect.bottom > 0 &&
@@ -21,12 +20,12 @@ chrome.contextMenus.onClicked.addListener(async (_, tab) => {
                 rect.width > 99 &&
                 rect.height > 99
               ) {
-                let styleMap = node.computedStyleMap();
+                let styleMap = n.computedStyleMap();
                 let src = (
-                  node.tagName == "IMG" && (
+                  n.tagName == "IMG" && (
                     styleMap.get("position").toString() != "static" ||
                     styleMap.get("pointer-events").toString() == "none"
-                  ) && node.src
+                  ) && n.src
                 ) || (
                   (styleMap = styleMap.get("background-image").toString())[3] == "(" &&
                     styleMap.slice(5, -2)
