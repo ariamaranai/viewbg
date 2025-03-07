@@ -46,7 +46,6 @@ chrome.runtime.onInstalled.addListener(() =>
   chrome.contextMenus.create({
     id: "",
     title: "View background image",
-    contexts: ["page", "link", "image"],
-    documentUrlPatterns: ["https://*/*", "https://*/", "http://*/*", "http://*/", "file://*/*", "file://*/"]
+    contexts: ["page", "link", "image"]
   })
 );
