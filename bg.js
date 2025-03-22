@@ -46,6 +46,6 @@ chrome.runtime.onInstalled.addListener(() =>
     id: "",
     title: "View background image",
     contexts: ["page", "link", "image"],
-    documentUrlPatterns: ["https://*/*", "https://*/", "http://*/*", "http://*/", "file://*/*", "file://*/"]
+    documentUrlPatterns: ["https://*/*", "https://*/", "http://*/*", "http://*/"]
   })
 );
