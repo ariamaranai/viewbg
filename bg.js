@@ -15,9 +15,7 @@ chrome.contextMenus.onClicked.addListener((_, tab) =>
         rect.y < w &&
         rect.bottom > 0 &&
         rect.x < h &&
-        rect.right > 0 &&
-        rect.width > 99 &&
-        rect.height > 99
+        rect.right > 0
       ) {
         let styleMap = n.computedStyleMap();
         let src = (
@@ -27,7 +25,7 @@ chrome.contextMenus.onClicked.addListener((_, tab) =>
           ) && n.src
         ) || (
           (styleMap = styleMap.get("background-image").toString())[3] == "(" &&
-            styleMap.slice(5, -2)
+          styleMap.slice(5, -2)
         );
         src && !urls.includes(src) && urls.push(src);
       }
@@ -40,7 +38,10 @@ chrome.contextMenus.onClicked.addListener((_, tab) =>
     let i = 0;
     let urls = results[0].result;
     while (i < urls.length)
-      chrome.tabs.create({ url: urls[i], index: ++i + tab.index });
+      chrome.tabs.create({
+        url: urls[i],
+        index: ++i + tab.index
+      });
   }).catch(() => 0)
 );
 chrome.runtime.onInstalled.addListener(() => (
