@@ -20,11 +20,11 @@ chrome.contextMenus.onClicked.addListener((_, tab) =>
         let styleMap = n.computedStyleMap();
         let src = (
           n.tagName == "IMG" && (
-            styleMap.get("position").toString() != "static" ||
-            styleMap.get("pointer-events").toString() == "none"
+            styleMap.get("position") + "" != "static" ||
+            styleMap.get("pointer-events") + "" == "none"
           ) && n.src
         ) || (
-          (styleMap = styleMap.get("background-image").toString())[3] == "(" &&
+          (styleMap = styleMap.get("background-image") + "")[3] == "(" &&
           styleMap.slice(5, -2)
         );
         src && !urls.includes(src) && urls.push(src);
