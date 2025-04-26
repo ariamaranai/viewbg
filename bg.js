@@ -4,19 +4,17 @@ chrome.contextMenus.onClicked.addListener((_, tab) =>
     js: [{ code:
 `(() => {
   let n = document;
+  let root = n.scrollingElement;
   let walker = n.createTreeWalker(n.activeElement, 1);
-  let w = innerWidth;
-  let h = innerHeight;
+  let x0 = root.scrollLeft;
+  let x1 = x0 + innerWidth;
+  let y0 = root.scrollTop;
+  let y1 = y0 + innerHeight;
   let urls = [];
   while ((n = walker.nextNode())) {
     if (n.checkVisibility()) {
       let rect = n.getBoundingClientRect();
-      if (
-        rect.y < w &&
-        rect.bottom > 0 &&
-        rect.x < h &&
-        rect.right > 0
-      ) {
+      if ((rect.y < y1 && y0 < rect.bottom) || (rect.x < x1 && x0 < rect.right)) {
         let styleMap = n.computedStyleMap();
         let src = (
           n.tagName == "IMG" && (
