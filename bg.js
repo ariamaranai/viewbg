@@ -11,7 +11,9 @@ chrome.contextMenus.onClicked.addListener((_, tab) =>
   let y0 = root.scrollTop;
   let y1 = y0 + innerHeight;
   let urls = [];
-  while ((n = walker.nextNode())) {
+
+  n = walker.currentNode;
+  while (n) {
     if (n.checkVisibility()) {
       let rect = n.getBoundingClientRect();
       if ((rect.y < y1 && y0 < rect.bottom) || (rect.x < x1 && x0 < rect.right)) {
@@ -28,6 +30,7 @@ chrome.contextMenus.onClicked.addListener((_, tab) =>
         src && !urls.includes(src) && urls.push(src);
       }
     }
+    n = walker.nextNode();
   }
   return urls;
 })();`
