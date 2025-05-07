@@ -36,13 +36,15 @@ chrome.contextMenus.onClicked.addListener((_, tab) =>
 })();`
       }]
   }).then(results => {
-    let i = 0;
     let urls = results[0].result;
-    while (i < urls.length)
+    let i = 0;
+    while (i < urls.length) (
       chrome.tabs.create({
         url: urls[i],
-        index: ++i + tab.index
-      });
+        index: tab.index + 1
+      }),
+      ++i
+    );
   }).catch(() => 0)
 );
 chrome.runtime.onInstalled.addListener(() => (
