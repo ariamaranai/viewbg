@@ -11,7 +11,6 @@ chrome.contextMenus.onClicked.addListener((_, tab) =>
   let y0 = root.scrollTop;
   let y1 = y0 + innerHeight;
   let urls = [];
-
   n = walker.currentNode;
   while (n) {
     if (n.checkVisibility()) {
@@ -21,11 +20,11 @@ chrome.contextMenus.onClicked.addListener((_, tab) =>
         let src = n.tagName == "IMG" && (
           styleMap.get("position") + "" != "static" ||
           styleMap.get("pointer-events") + "" == "none"
-        ) && n.src ||
+        ) &&
+        n.currentSrc ||
         (styleMap = styleMap.get("background-image") + "")[3] == "(" &&
         styleMap.slice(5, -2);
-
-        src && !urls.includes(src) && urls.push(src);
+        src && (urls.includes(src) || urls.push(src));
       }
     }
     n = walker.nextNode();
