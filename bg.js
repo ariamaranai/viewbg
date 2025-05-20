@@ -18,15 +18,13 @@ chrome.contextMenus.onClicked.addListener((_, tab) =>
       let rect = n.getBoundingClientRect();
       if ((rect.y < y1 && y0 < rect.bottom) || (rect.x < x1 && x0 < rect.right)) {
         let styleMap = n.computedStyleMap();
-        let src = (
-          n.tagName == "IMG" && (
-            styleMap.get("position") + "" != "static" ||
-            styleMap.get("pointer-events") + "" == "none"
-          ) && n.src
-        ) || (
-          (styleMap = styleMap.get("background-image") + "")[3] == "(" &&
-          styleMap.slice(5, -2)
-        );
+        let src = n.tagName == "IMG" && (
+          styleMap.get("position") + "" != "static" ||
+          styleMap.get("pointer-events") + "" == "none"
+        ) && n.src ||
+        (styleMap = styleMap.get("background-image") + "")[3] == "(" &&
+        styleMap.slice(5, -2);
+
         src && !urls.includes(src) && urls.push(src);
       }
     }
@@ -37,14 +35,21 @@ chrome.contextMenus.onClicked.addListener((_, tab) =>
       }]
   }).then(results => {
     let urls = results[0].result;
+    let len = urls.length;
+    let tabIds = Array(len);
     let i = 0;
-    while (i < urls.length) (
-      chrome.tabs.create({
+    while (i < len) (
+      tabIds[i] = chrome.tabs.create({
         url: urls[i],
         index: tab.index + 1
       }),
       ++i
     );
+    len > 1 &&
+    Promise.all(tabIds).then(tabs => {
+      while (tabIds[--i] = tabs[i].id, i);
+      chrome.tabs.group({ tabIds });
+    });
   }).catch(() => 0)
 );
 chrome.runtime.onInstalled.addListener(() => (
