@@ -31,7 +31,7 @@ chrome.contextMenus.onClicked.addListener((_, tab) =>
   }
   return urls;
 })();`
-      }]
+    }]
   }).then(results => {
     let urls = results[0].result;
     let len = urls.length;
@@ -51,14 +51,11 @@ chrome.contextMenus.onClicked.addListener((_, tab) =>
     });
   }).catch(() => 0)
 );
-chrome.runtime.onInstalled.addListener(() => (
-  chrome.userScripts.configureWorld({
-    messaging: !0
-  }),
+chrome.runtime.onInstalled.addListener(() =>
   chrome.contextMenus.create({
     id: "",
     title: "View background image",
     contexts: ["page", "link", "image"],
     documentUrlPatterns: ["https://*/*", "http://*/*"]
   })
-));
+);
