@@ -3,19 +3,21 @@ chrome.contextMenus.onClicked.addListener((_, tab) =>
     target: { tabId: tab.id },
     js: [{ code:
 `(() => {
-  let n = document;
-  let root = n.scrollingElement;
-  let walker = n.createTreeWalker(n.activeElement, 1);
+  let d = document;
+  let root = d.scrollingElement;
+  let { activeElement } = d;
+  let walker = d.createTreeWalker(activeElement, 1);
   let x0 = root.scrollLeft;
   let x1 = x0 + innerWidth;
   let y0 = root.scrollTop;
   let y1 = y0 + innerHeight;
   let urls = [];
-  n = walker.currentNode;
+  let n = walker.currentNode;
+
   while (n) {
     if (n.checkVisibility()) {
-      let rect = n.getBoundingClientRect();
-      if ((rect.y < y1 && y0 < rect.bottom) || (rect.x < x1 && x0 < rect.right)) {
+      let r = n.getBoundingClientRect();
+      if ((r.y < y1 && y0 < r.bottom) || (r.x < x1 && x0 < r.right)) {
         let styleMap = n.computedStyleMap();
         let src = n.tagName == "IMG" && (
           styleMap.get("position") + "" != "static" ||
@@ -24,31 +26,40 @@ chrome.contextMenus.onClicked.addListener((_, tab) =>
         n.currentSrc ||
         (styleMap = styleMap.get("background-image") + "")[3] == "(" &&
         styleMap.slice(5, -2);
-        src && (urls.includes(src) || urls.push(src));
+        src && urls.push(src);
       }
     }
     n = walker.nextNode();
   }
+
+  if (!urls.length) {
+    let { x, y, right, bottom } = activeElement.getBoundingClientRect();
+    let { images } = d;
+    let i = 0;
+    while (i < images.length) {
+      let image = images[i];
+      let r = image.getBoundingClientRect();
+      (image.naturalWidth > 1 || image.naturalHeight > 1) &&
+      r.y >= y && r.bottom <= bottom && r.x >= x && r.right <= right &&
+      urls.push(image.currentSrc);
+      ++i;
+    }
+  }
+
   return urls;
 })();`
     }]
   }).then(results => {
     let urls = results[0].result;
-    let len = urls.length;
-    let tabIds = Array(len);
-    let i = 0;
-    while (i < len) (
-      tabIds[i] = chrome.tabs.create({
-        url: urls[i],
-        index: tab.index + 1
-      }),
-      ++i
-    );
-    len > 1 &&
-    Promise.all(tabIds).then(tabs => {
-      while (tabIds[--i] = tabs[i].id, i);
-      chrome.tabs.group({ tabIds });
-    });
+    let i = urls.length;
+    if (i)
+      while (
+        chrome.tabs.create({
+          url: urls[--i],
+          index: tab.index + 1
+        }),
+        i
+      );
   }).catch(() => 0)
 );
 chrome.runtime.onInstalled.addListener(() =>
