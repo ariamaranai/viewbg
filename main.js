@@ -27,7 +27,6 @@
     }
     n = walker.nextNode();
   }
-
   if (!urls.length) {
     let { x, y } = activeElement.getBoundingClientRect();
     x ^= 0;
@@ -50,6 +49,5 @@
       ++i;
     }
   }
-
   return urls;
 })()
