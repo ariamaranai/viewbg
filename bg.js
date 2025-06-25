@@ -1,4 +1,4 @@
-chrome.contextMenus.onClicked.addListener((info, { id, index }) => {
+chrome.contextMenus.onClicked.addListener(async (info, { id, index }) => {
   if (info.mediaType == "image") {
     let { srcUrl } = info;
     srcUrl &&
@@ -6,23 +6,24 @@ chrome.contextMenus.onClicked.addListener((info, { id, index }) => {
       url: srcUrl,
       index: index + 1
     });
-  } else
-    chrome.userScripts.execute({
-      target: { tabId: id },
-      js: [{ file: "main.js" }] 
-    }).then(results => {
-      let urls = results[0].result;
-      let i = urls.length;
+  } else {
+    try {
+      let { result } = (await chrome.userScripts.execute({
+        target: { tabId: id },
+        js: [{ file: "main.js" }] 
+      }))[0];
+      let i = result.length;
       if (i) {
         while (
           chrome.tabs.create({
-            url: urls[--i],
+            url: result[--i],
             index: index + 1
           }),
           i
         );
       }
-    }).catch(() => 0)
+    } catch (e) {}
+  }
 });
 chrome.runtime.onInstalled.addListener(() =>
   chrome.contextMenus.create({
