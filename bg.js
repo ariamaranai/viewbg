@@ -22,7 +22,7 @@ chrome.contextMenus.onClicked.addListener(async (info, { id, index }) => {
           i
         );
       }
-    } catch (e) {}
+    } catch {}
   }
 });
 chrome.runtime.onInstalled.addListener(() =>
