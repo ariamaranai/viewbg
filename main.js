@@ -1,19 +1,14 @@
 (() => {
   let d = document;
-  let root = d.scrollingElement;
   let { activeElement } = d;
   let walker = d.createTreeWalker(activeElement, 1);
-  let x0 = root.scrollLeft;
-  let x1 = x0 + innerWidth;
-  let y0 = root.scrollTop;
-  let y1 = y0 + innerHeight;
+  let { innerWidth, innerHeight } = self;
   let urls = [];
   let n = walker.currentNode;
-
   while (n) {
     if (n.checkVisibility()) {
-      let r = n.getBoundingClientRect();
-      if ((r.y < y1 && y0 < r.bottom) || (r.x < x1 && x0 < r.right)) {
+      let { y, bottom, x, right } = n.getBoundingClientRect();
+      if (y >= 0 && y < innerHeight && bottom > 0 && ((x >= 0 && x < innerWidth) || right > 0)) {
         let styleMap = n.computedStyleMap();
         let src = n.tagName == "IMG" && (
           styleMap.get("position") + "" != "static" ||
@@ -28,23 +23,25 @@
     n = walker.nextNode();
   }
   if (!urls.length) {
-    let { x, y } = activeElement.getBoundingClientRect();
-    x ^= 0;
-    y ^= 0;
+    let rect = activeElement.getBoundingClientRect();
     let { images } = d;
-    let minDist = 0;
+    let minds = 65535;
     let i = 0;
+    let _x = rect.x ^ 0;
+    let _y = rect.y ^ 0;
     while (i < images.length) {
       let img = images[i];
-      let r = img.getBoundingClientRect();
       if (img.naturalWidth > 1 || img.naturalHeight > 1) {
-        let dist = r.x - x;
-        let distY = r.y - y;
-        dist >= 0 && distY >= 0 &&
-        (dist += distY, minDist == 0 || dist < minDist) && (
-          minDist = dist,
-          urls[0] = img.srcset && img.srcset.split(" ").filter((v, i) => i % 2 == 0).at(-1) || img.currentSrc
-        );
+        let { x, y } = img.getBoundingClientRect();
+        let dsx = x - _x;
+        let dsy = y - _y;
+        if (dsx >= 0 && dsy >= 0) {
+          let ds = dsx + dxy;
+          ds <= minds && (
+            minds = ds,
+            urls[0] = img.srcset && img.srcset.split(" ").filter((v, i) => i % 2 == 0).at(-1) || img.currentSrc
+          );
+        }
       }
       ++i;
     }
