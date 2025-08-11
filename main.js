@@ -42,7 +42,7 @@
           let ds = dsx + dxy;
           ds <= minds && (
             minds = ds,
-            urls[0] = img.srcset && img.srcset.split(" ").filter((v, i) => i % 2 == 0).at(-1) || img.currentSrc
+            urls[0] = img.srcset && img.srcset.split(" ").filter((_, i) => i % 2 == 0).at(-1) || img.currentSrc
           );
         }
       }
