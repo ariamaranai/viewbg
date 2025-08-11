@@ -5,16 +5,18 @@
   let { innerWidth, innerHeight } = self;
   let urls = [];
   let n = walker.currentNode;
+
   while (n) {
     if (n.checkVisibility()) {
       let { y, bottom, x, right } = n.getBoundingClientRect();
       if (y >= 0 && y < innerHeight && bottom > 0 && ((x >= 0 && x < innerWidth) || right > 0)) {
         let styleMap = n.computedStyleMap();
         let src = n.tagName == "IMG" && (
+          (n.naturalWidth > 1 || n.naturalHeight > 1) &&
           styleMap.get("position") + "" != "static" ||
           styleMap.get("pointer-events") + "" == "none"
         ) &&
-        (n.srcset && n.srcset.split(" ").filter((v, i) => i % 2 == 0).at(-1) || n.currentSrc) ||
+        (n.srcset && n.srcset.split(" ").filter((_, i) => i % 2 == 0).at(-1) || n.currentSrc) ||
         (styleMap = styleMap.get("background-image") + "")[3] == "(" &&
         styleMap.slice(5, -2);
         src && urls.push(src);
@@ -22,6 +24,7 @@
     }
     n = walker.nextNode();
   }
+
   if (!urls.length) {
     let rect = activeElement.getBoundingClientRect();
     let { images } = d;
