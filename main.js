@@ -4,25 +4,24 @@
   let walker = d.createTreeWalker(activeElement, 1);
   let { innerWidth, innerHeight } = self;
   let urls = [];
-  let n = walker.currentNode;
+  let e = walker.currentNode;
+  let toSrc = e => (e.srcset && e.srcset.split(",").map(v => v.split(" ")).map(v => [v[0], parseInt(v[1])]).sort((a, b) => b[1] - a[1])[0][0] || e.currentSrc)
 
-  while (n) {
-    if (n.checkVisibility()) {
-      let { y, bottom, x, right } = n.getBoundingClientRect();
+  while (e) {
+    if (e.checkVisibility()) {
+      let { y, bottom, x, right } = e.getBoundingClientRect();
       if (y >= 0 && y < innerHeight && bottom > 0 && ((x >= 0 && x < innerWidth) || right > 0)) {
-        let styleMap = n.computedStyleMap();
-        let src = n.tagName == "IMG" && (
-          (n.naturalWidth > 1 || n.naturalHeight > 1) &&
+        let styleMap = e.computedStyleMap();
+        let src = e.tagName == "IMG" && (
+          (e.naturalWidth > 1 || e.naturalHeight > 1) &&
           styleMap.get("position") + "" != "static" ||
           styleMap.get("pointer-events") + "" == "none"
         ) &&
-        (n.srcset && n.srcset.split(" ").filter((_, i) => i % 2 == 0).at(-1) || n.currentSrc) ||
-        (styleMap = styleMap.get("background-image") + "")[3] == "(" &&
-        styleMap.slice(5, -2);
+        toSrc(e) || (styleMap = styleMap.get("background-image") + "")[3] == "(" && styleMap.slice(5, -2);
         src && urls.push(src);
       }
     }
-    n = walker.nextNode();
+    e = walker.nextNode();
   }
 
   if (!urls.length) {
@@ -33,16 +32,16 @@
     let _x = rect.x ^ 0;
     let _y = rect.y ^ 0;
     while (i < images.length) {
-      let img = images[i];
-      if (img.naturalWidth > 1 || img.naturalHeight > 1) {
-        let { x, y } = img.getBoundingClientRect();
+      let e = images[i];
+      if (e.naturalWidth > 1 || e.naturalHeight > 1) {
+        let { x, y } = e.getBoundingClientRect();
         let dsx = x - _x;
         let dsy = y - _y;
         if (dsx >= 0 && dsy >= 0) {
           let ds = dsx + dxy;
           ds <= minds && (
             minds = ds,
-            urls[0] = img.srcset && img.srcset.split(" ").filter((_, i) => i % 2 == 0).at(-1) || img.currentSrc
+            urls[0] = toSrc(e)
           );
         }
       }
