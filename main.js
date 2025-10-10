@@ -14,10 +14,10 @@
         let styleMap = e.computedStyleMap();
         let src = e.tagName == "IMG" && (
           (e.naturalWidth > 1 || e.naturalHeight > 1) &&
-          styleMap.get("position") + "" != "static" ||
-          styleMap.get("pointer-events") + "" == "none"
+          styleMap.get("position").value != "static" ||
+          styleMap.get("pointer-events").value == "none"
         ) &&
-        toSrc(e) || (styleMap = styleMap.get("background-image") + "")[3] == "(" && styleMap.slice(5, -2);
+        toSrc(e) || (styleMap = styleMap.get("background-image").value)[3] == "(" && styleMap.slice(5, -2);
         src && urls.push(src);
       }
     }
