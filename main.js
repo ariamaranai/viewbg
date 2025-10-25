@@ -27,7 +27,7 @@
   if (!urls.length) {
     let rect = activeElement.getBoundingClientRect();
     let { images } = d;
-    let minds = 65535;
+    let minOffset = 65535;
     let i = 0;
     let _x = rect.x ^ 0;
     let _y = rect.y ^ 0;
@@ -35,12 +35,12 @@
       let e = images[i];
       if (e.naturalWidth > 1 || e.naturalHeight > 1) {
         let { x, y } = e.getBoundingClientRect();
-        let dsx = x - _x;
-        let dsy = y - _y;
-        if (dsx >= 0 && dsy >= 0) {
-          let ds = dsx + dxy;
-          ds <= minds && (
-            minds = ds,
+        let offsetX = x - _x;
+        let offsetY = y - _y;
+        if (offsetX >= 0 && offsetY >= 0) {
+          let offset = offsetX + offsetY;
+          offset <= minOffset && (
+            minOffset = offset,
             urls[0] = toSrc(e)
           );
         }
