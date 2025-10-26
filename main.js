@@ -5,7 +5,7 @@
   let { innerWidth, innerHeight } = self;
   let urls = [];
   let e = walker.currentNode;
-  let toSrc = e => (e.srcset && e.srcset.split(",").map(v => v.split(" ")).map(v => [v[0], parseInt(v[1])]).sort((a, b) => b[1] - a[1])[0][0] || e.currentSrc)
+  let parseSrcset = e => (e.srcset && e.srcset.split(",").map(v => v.split(" ")).map(v => [v[0], parseInt(v[1])]).sort((a, b) => b[1] - a[1])[0][0] || e.currentSrc);
 
   while (e) {
     if (e.checkVisibility()) {
@@ -17,7 +17,7 @@
           styleMap.get("position").value != "static" ||
           styleMap.get("pointer-events").value == "none"
         ) &&
-        toSrc(e) || (styleMap = styleMap.get("background-image").value)[3] == "(" && styleMap.slice(5, -2);
+        parseSrcset(e) || (styleMap = styleMap.get("background-image").value)[3] == "(" && styleMap.slice(5, -2);
         src && urls.push(src);
       }
     }
@@ -34,14 +34,13 @@
     while (i < images.length) {
       let e = images[i];
       if (e.naturalWidth > 1 || e.naturalHeight > 1) {
-        let { x, y } = e.getBoundingClientRect();
-        let offsetX = x - _x;
-        let offsetY = y - _y;
-        if (offsetX >= 0 && offsetY >= 0) {
-          let offset = offsetX + offsetY;
-          offset <= minOffset && (
-            minOffset = offset,
-            urls[0] = toSrc(e)
+        let rect = e.getBoundingClientRect();
+        let offsetX = rect.x - _x;
+        if (offsetX >= 0) {
+          let offsetY = rect.y - _y;
+          offsetY >= 0 && (offsetY += offsetX) <= minOffset && (
+            minOffset = offsetY,
+            urls[0] = parseSrcset(e)
           );
         }
       }
