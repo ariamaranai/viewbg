@@ -1,13 +1,10 @@
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
-  let srcUrl = info.srcUrl;
-  let index = tab.index;
+  let { srcUrl } = info;
+  let index = tab.index + 1;
   if (info.mediaType == "image") {
     let bmp = await createImageBitmap(await (await fetch(srcUrl)).blob());
     (bmp.width > 1 || bmp.height > 1) &&
-    chrome.tabs.create({
-      url: srcUrl,
-      index: index + 1
-    });
+    chrome.tabs.create({ url: srcUrl, index });
   }
   try {
     let result = (await chrome.userScripts.execute({
@@ -19,10 +16,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       let url = 0;
       while (
         (url = result[--i]) != srcUrl &&
-        chrome.tabs.create({
-          url,
-          index: index + 1
-        }),
+        chrome.tabs.create({ url, index }),
         i
       );
     }
