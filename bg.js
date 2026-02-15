@@ -3,7 +3,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   let index = tab.index + 1;
   if (info.mediaType == "image") {
     let bmp = await createImageBitmap(await (await fetch(srcUrl)).blob());
-    (bmp.width > 1 || bmp.height > 1) &&
+    bmp.width > 1 && bmp.height > 1 &&
     chrome.tabs.create({ url: srcUrl, index });
   }
   try {
