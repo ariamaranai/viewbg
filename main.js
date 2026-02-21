@@ -15,7 +15,7 @@
       if (p >= 0 && p < innerHeight && rect.bottom > 0 && (((p = rect.x) >= 0 && p < innerWidth) || rect.right > 0)) {
         let styleMap = e.computedStyleMap();
         let src =
-          e.tagName == "IMG" &&
+          e instanceof HTMLImageElement &&
           e.naturalWidth > 1 && e.naturalHeight > 1 &&
           (styleMap.get("position").value != "static" || styleMap.get("pointer-events").value == "none") &&
           parseSrcset(e, e.naturalWidth) || (styleMap = styleMap.get("background-image").value)[3] == "(" && styleMap.slice(5, -2);
