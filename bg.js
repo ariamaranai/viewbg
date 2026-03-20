@@ -9,8 +9,8 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   try {
     let result = (await chrome.scripting.executeScript({
       target: { tabId: tab.id },
-      files: ["main.js"],
-      world: "MAIN"
+      world: "MAIN",
+      files: ["main.js"]
     }))[0].result;
     let i = result.length;
     if (i) {
