@@ -7,9 +7,10 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     chrome.tabs.create({ url: srcUrl, index });
   }
   try {
-    let result = (await chrome.userScripts.execute({
+    let result = (await chrome.scripting.executeScript({
       target: { tabId: tab.id },
-      js: [{ file: "main.js" }] 
+      files: ["main.js"],
+      world: "MAIN"
     }))[0].result;
     let i = result.length;
     if (i) {
