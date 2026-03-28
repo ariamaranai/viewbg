@@ -7,7 +7,7 @@
   let parseSrcset = (e, w) => {
     let srcset = e.srcset;
     let src = e.src;
-    return srcset ? w < (srcset = Array.from(srcset.matchAll(/[^,\s]+ (\d+)/g)).sort((a, b) => b[2] - a[2])[0]) ? srcset[0][1] : src : src;
+    return srcset ? w < (srcset = Array.from(srcset.matchAll(/([^,\s])+ (\d+)/g)).sort((a, b) => b[2] - a[2])[0]) ? srcset[0][1] : src : src;
   }
   while (e) {
     if (e.checkVisibility()) {
