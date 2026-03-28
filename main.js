@@ -5,8 +5,9 @@
   let urls = [];
   let e = walker.currentNode;
   let parseSrcset = (e, w) => {
-    let result = e.srcset && e.srcset.split(",").map(v => v.split(" ")).map(v => [v[0], parseInt(v[1])]).sort((a, b) => b[1] - a[1])[0];
-    return result && w < result[1] ? result[0] : e.src
+    let srcset = e.srcset;
+    let src = e.src;
+    return srcset ? w < (srcset = Array.from(srcset.matchAll(/[^,\s]+ (\d+)/g)).sort((a, b) => b[2] - a[2])[0]) ? srcset[0][1] : src : src;
   }
   while (e) {
     if (e.checkVisibility()) {
