@@ -13,12 +13,13 @@
       let rect = e.getBoundingClientRect();
       let p = rect.y;
       if (p >= 0 && p < innerHeight && rect.bottom > 0 && (((p = rect.x) >= 0 && p < innerWidth) || rect.right > 0)) {
-        let styleMap = e.computedStyleMap();
+        p = 0;
         let src =
-          e instanceof HTMLImageElement &&
+          (e instanceof HTMLImageElement &&
           e.naturalWidth > 1 && e.naturalHeight > 1 &&
-          (styleMap.get("position").value != "static" || styleMap.get("pointer-events").value == "none") &&
-          parseSrcset(e, e.naturalWidth) || (styleMap = styleMap.get("background-image").value)[3] == "(" && styleMap.slice(5, -2);
+          ((p = e.computedStyleMap()).get("position").value != "static" || p.get("pointer-events").value == "none") &&
+          parseSrcset(e, e.naturalWidth)) ||
+          (p = ((p || e.computedStyleMap()).get("background-image").value)) && p.startsWith("urls(") && p.slice(5, -2);
         src && urls.push(src);
       }
     }
