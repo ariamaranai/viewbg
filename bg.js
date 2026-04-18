@@ -21,6 +21,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
         i
       );
     }
+    return 0;
   } catch {}
 });
 chrome.runtime.onInstalled.addListener(() =>
