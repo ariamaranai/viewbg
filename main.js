@@ -18,9 +18,9 @@
         let src =
           (e instanceof HTMLImageElement &&
           e.naturalWidth > 1 && e.naturalHeight > 1 &&
-          ((p = e.computedStyleMap()).get("position").value != "static" || p.get("pointer-events").value == "none") &&
+          ((p = getComputedStyle(e)).position != "static" || p.pointerEvents == "none") &&
           parseSrcset(e, e.naturalWidth)) ||
-          (p = ((p || e.computedStyleMap()).get("background-image").value)) && p.startsWith("urls(") && p.slice(5, -2);
+          (p = ((p || getComputedStyle(e)).backgroundImage)) && p.startsWith("urls(") && p.slice(5, -2);
         src && urls.push(src);
       }
     }
