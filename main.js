@@ -32,9 +32,9 @@
     let _y = rect.y ^ 0;
     let minOffset = 65535;
     let images = d.images;
-    let i = 0;
-    while (i < images.length) {
-      let e = images[i];
+    let i = images.length;
+    while (i) {
+      let e = images[--i];
       if (e.naturalWidth > 1 && e.naturalHeight > 1) {
         let rect = e.getBoundingClientRect();
         let offsetX = rect.x - _x;
@@ -46,7 +46,6 @@
           );
         }
       }
-      ++i;
     }
   }
   return urls;
