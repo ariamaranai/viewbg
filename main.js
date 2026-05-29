@@ -16,11 +16,17 @@
       if (p >= 0 && p < innerHeight && rect.bottom > 0 && (((p = rect.x) >= 0 && p < innerWidth) || rect.right > 0)) {
         p = 0;
         let src =
-          (e instanceof HTMLImageElement &&
-          e.naturalWidth > 1 && e.naturalHeight > 1 &&
-          ((p = getComputedStyle(e)).position != "static" || p.pointerEvents == "none") &&
-          parseSrcset(e, e.naturalWidth)) ||
-          (p = ((p || getComputedStyle(e)).backgroundImage)) && p.startsWith("urls(") && p.slice(5, -2);
+          (
+            e instanceof HTMLImageElement &&
+            e.naturalWidth > 1 && e.naturalHeight > 1 &&
+            ((p = getComputedStyle(e)).position != "static" || p.pointerEvents == "none") &&
+            parseSrcset(e, e.naturalWidth)
+          ) ||
+          (
+            p = ((p || getComputedStyle(e)).backgroundImage)) && p.startsWith("url(") && (
+            (rect = d.createElement("img")).src = p.slice(5, -2),
+            rect.src
+          )
         src && urls.push(src);
       }
     }
