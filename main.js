@@ -17,7 +17,7 @@
         p = 0;
         let src =
           (
-            e instanceof HTMLImageElement &&
+            e.localName == "img" &&
             e.naturalWidth > 1 && e.naturalHeight > 1 &&
             ((p = getComputedStyle(e)).position != "static" || p.pointerEvents == "none") &&
             parseSrcset(e, e.naturalWidth)
