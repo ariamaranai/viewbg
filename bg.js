@@ -1,34 +1,37 @@
-chrome.contextMenus.onClicked.addListener(async (info, tab) => {
-  let { srcUrl } = info;
-  let index = tab.index + 1;
-  if (info.mediaType == "image") {
-    let bmp = await createImageBitmap(await (await fetch(srcUrl)).blob());
-    bmp.width > 1 && bmp.height > 1 &&
-    chrome.tabs.create({ url: srcUrl, index });
-  }
-  try {
-    let result = (await chrome.scripting.executeScript({
+onunhandledrejection = e => e.preventDefault();
+{
+  let { contextMenus, runtime, scripting, tabs } = chrome;
+  contextMenus.onClicked.addListener((info, tab) => {
+    let { srcUrl } = info;
+    let index = tab.index + 1;
+    info.mediaType == "image" &&
+      fetch(srcUrl)
+        .then(r => r.blob())
+        .then(r => createImageBitmap(r))
+        .then(r => r.width > r.height > 1 && tabs.create({ url: srcUrl, index }));
+
+    scripting.executeScript({
       target: { tabId: tab.id },
       world: "MAIN",
       files: ["main.js"]
-    }))[0].result;
-    let i = result.length;
-    if (i) {
-      let url = 0;
+    }, results => {
+      let result = results[0].result;
+      let url;
+      let i = result.length;
       while (
-        (url = result[--i]) != srcUrl &&
-        chrome.tabs.create({ url, index }),
-        i
+        i &&
+        url !== result[--i] &&
+        tabs.create({ url, index })
       );
-    }
-    return 0;
-  } catch {}
-});
-chrome.runtime.onInstalled.addListener(() =>
-  chrome.contextMenus.create({
-    id: "",
-    title: "View background image",
-    contexts: ["page", "link", "image"],
-    documentUrlPatterns: ["https://*/*", "http://*/*"]
-  })
-);
+    });
+  });
+
+  runtime.onInstalled.addListener(() =>
+    contextMenus.create({
+      id: "",
+      title: "View background image",
+      contexts: ["page", "link", "image"],
+      documentUrlPatterns: ["https://*/*", "http://*/*"]
+    })
+  );
+}

@@ -1,14 +1,10 @@
-(() => {
-  let d = document;
+(d => {
   let activeElement = d.activeElement;
   let walker = d.createTreeWalker(activeElement, 1);
   let urls = [];
   let e = walker.currentNode;
-  let parseSrcset = (e, w) => {
-    let srcset = e.srcset;
-    let src = e.src;
-    return srcset ? w < (srcset = Array.from(srcset.matchAll(/([^,\s]+) (\d+)/g)).sort((a, b) => b[2] - a[2])[0]) ? srcset[0][1] : src : src;
-  }
+  let parseSrcset = ({ srcset, src }, w) => srcset ? w < (srcset = Array.from(srcset.matchAll(/([^,\s]+) (\d+)/g)).sort((a, b) => b[2] - a[2])[0]) ? srcset[0][1] : src : src;
+
   while (e) {
     if (e.checkVisibility()) {
       let rect = e.getBoundingClientRect();
@@ -17,9 +13,9 @@
         p = 0;
         let src =
           (
-            e.localName == "img" &&
+            e.localName === "img" &&
             e.naturalWidth > 1 && e.naturalHeight > 1 &&
-            ((p = getComputedStyle(e)).position != "static" || p.pointerEvents == "none") &&
+            ((p = getComputedStyle(e)).position !== "static" || p.pointerEvents === "none") &&
             parseSrcset(e, e.naturalWidth)
           ) ||
           (
@@ -55,4 +51,4 @@
     }
   }
   return urls;
-})()
+})(document)
