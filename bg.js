@@ -7,7 +7,7 @@ onunhandledrejection = e => e.preventDefault();
     info.mediaType == "image" && fetch(srcUrl)
     .then(r => r.blob())
     .then(r => createImageBitmap(r))
-    .then(r => r.width > r.height > 1 && tabs.create({ url: srcUrl, index }));
+    .then(r => r.width !== 1 && r.height !== 1 && tabs.create({ url: srcUrl, index }));
 
     scripting.executeScript({
       target: { tabId: tab.id },
